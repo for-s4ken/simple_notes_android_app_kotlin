@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">simple_notes_android_app_kotlin</string>
+    <string name="additem">addItem</string>
+    <string name="savenotes">saveNotes</string>
 </resources>
