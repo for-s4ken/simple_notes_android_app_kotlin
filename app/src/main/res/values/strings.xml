@@ -2,4 +2,7 @@
     <string name="app_name">simple_notes_android_app_kotlin</string>
     <string name="additem">addItem</string>
     <string name="savenotes">saveNotes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

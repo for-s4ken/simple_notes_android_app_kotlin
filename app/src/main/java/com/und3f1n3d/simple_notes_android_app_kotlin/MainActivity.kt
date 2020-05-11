@@ -1,12 +1,23 @@
 package com.und3f1n3d.simple_notes_android_app_kotlin
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.und3f1n3d.simple_notes_android_app_kotlin.fragments.NoteEditFragment
 import com.und3f1n3d.simple_notes_android_app_kotlin.fragments.NotesListFragment
 import com.und3f1n3d.simple_notes_android_app_kotlin.model.Note
+import java.io.File
+import java.io.PrintWriter
+
+private const val MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1337
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     // notes editing
 
     fun editNote(id: Int, textToReplace: String){
-        notes[id]
+        notes[id].text = textToReplace
     }
 
     fun addNote(toAdd: Note){
@@ -50,7 +61,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        
+        when(item.itemId){
+            addItem.itemId -> changeFragment(NoteEditFragment())
+            saveNotesItem.itemId -> exportNotes()
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -64,9 +78,32 @@ class MainActivity : AppCompatActivity() {
 
     //
 
-    fun changeFragment(fragmentToChange: Fragment){
+    private fun changeFragment(fragmentToChange: Fragment){
         supportFragmentManager.beginTransaction()
             .add(R.id.mainLayout, fragmentToChange)
             .commit()
+    }
+
+    // firstly checking for user permission, then check if file is created
+
+    private fun exportNotes(){
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val savedNotes = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/notes.txt")
+            println(savedNotes.canonicalPath)
+            savedNotes.createNewFile()
+            val writer = PrintWriter(savedNotes)
+            for(temp in notes){
+                writer.println(temp)
+            }
+            writer.close()
+            Toast.makeText(this, "Successfully exported to Downloads", Toast.LENGTH_LONG)
+                .show()
+
+        }else{
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                MY_PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE)
+            Toast.makeText(this, "Permission granted! Try again.", Toast.LENGTH_LONG).show()
+        }
     }
 }
