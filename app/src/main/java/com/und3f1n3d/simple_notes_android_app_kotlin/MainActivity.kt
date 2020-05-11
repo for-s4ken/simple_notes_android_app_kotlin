@@ -10,14 +10,15 @@ import com.und3f1n3d.simple_notes_android_app_kotlin.model.Note
 
 class MainActivity : AppCompatActivity() {
 
-    private var notes: ArrayList<Note> =  ArrayList()
-    private var addItem: MenuItem? = null
-    private var saveNotesItem: MenuItem? = null
+    private lateinit var notes: ArrayList<Note>
+    private lateinit var addItem: MenuItem
+    private lateinit var saveNotesItem: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if(savedInstanceState == null){
+            notes = ArrayList()
             for(i: Int in 0..10){
                 notes.add(Note("Note number $i"))
                 println(notes[i].toString())
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     // notes editing
 
     fun editNote(id: Int, textToReplace: String){
-        notes[id].changeText(textToReplace)
+        notes[id]
     }
 
     fun addNote(toAdd: Note){
@@ -39,13 +40,18 @@ class MainActivity : AppCompatActivity() {
 
     //
 
-    //overriding
+    // overriding
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.mainmenu, menu)
-        addItem = menu?.findItem(R.id.addItem)
-        saveNotesItem = menu?.findItem(R.id.saveNotesItem)
+        addItem = menu.findItem(R.id.addItem)
+        saveNotesItem = menu.findItem(R.id.saveNotesItem)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
